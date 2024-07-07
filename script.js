@@ -36,7 +36,7 @@ const questions = [
         ]
     },
     {
-        question: 'Which of these characters are friends with Harry Potter?',
+        question: 'Which of these characters are friends with Harry Potter? (select both)',
         answers: [
             { text: 'Ron Weasley', correct: true },
             { text: 'Draco Malfoy', correct: false },
@@ -134,23 +134,40 @@ function resetState() {
     }
 }
 
+function checkAllCorrectSelected() {
+    const correctAnswers = questions[currentQuestionIndex].answers.filter(answer => answer.correct);
+    const selectedCorrectAnswers = Array.from(answerButtonsElement.children).filter(button => button.classList.contains('correct')).length;
+    const selectedWrongAnswers = Array.from(answerButtonsElement.children).filter(button => button.classList.contains('wrong')).length;
+
+    // Проверяем условия для отображения кнопки Next
+    if (selectedWrongAnswers > 0 || (selectedCorrectAnswers > 0 && selectedCorrectAnswers === correctAnswers.length)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function selectAnswer(e) {
     const selectedButton = e.target;
     const correct = selectedButton.dataset.correct === 'true';
+
     if (correct) {
         selectedButton.classList.add('correct');
         score++;
     } else {
         selectedButton.classList.add('wrong');
     }
-    Array.from(answerButtonsElement.children).forEach(button => {
-        if (button.dataset.correct) {
-            button.classList.add('correct');
-        }
-        button.removeEventListener('click', selectAnswer);
-    });
-    nextButton.style.display = 'block';
-    nextButton.disabled = false;
+
+    selectedButton.removeEventListener('click', selectAnswer);
+
+    if (checkAllCorrectSelected()) {
+        nextButton.style.display = 'block';
+        nextButton.disabled = false;
+
+        Array.from(answerButtonsElement.children).forEach(button => {
+            button.removeEventListener('click', selectAnswer);
+        });
+    }
 }
 
 function showScore() {
