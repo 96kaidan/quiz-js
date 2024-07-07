@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(to right, var(--primaryColor), var(--secondaryColor));
+    background: linear-gradient(to right, #4facfe, #00f2fe);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,9 +9,9 @@ body {
 }
 
 .quiz-container {
-    background-color: var(--backgroundColor);
+    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 8px var(--boxShadowColor);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
     text-align: center;
     width: 300px;
@@ -27,7 +27,7 @@ body {
     top: 10px;
     right: 10px;
     font-size: 14px;
-    color: var(--textColor);
+    color: #837d7d;
 }
 
 .btn-container {
@@ -37,7 +37,7 @@ body {
 }
 
 button {
-    background-color: var(--buttonBackgroundColor);
+    background-color: #2c3e50;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -47,13 +47,17 @@ button {
 }
 
 button:hover {
-    background-color: var(--buttonHoverColor);
+    background-color: #34495e;
 }
 
 button.correct {
-    background-color: var(--correctButtonColor);
+    background-color: #27ae60;
 }
 
 button.wrong {
-    background-color: var(--wrongButtonColor);
+    background-color: #e74c3c;
+}
+
+.next-btn {
+    margin-top: 20px;
 }
