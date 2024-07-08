@@ -10,3 +10,6 @@ This is a simple quiz application where users can answer multiple-choice questio
 - HTML
 - CSS
 - JavaScript
+
+# Online-version
+https://96kaidan.github.io/quiz-js/
