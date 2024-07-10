@@ -98,6 +98,8 @@ const questionNumberElement = document.getElementById('question-number');
 
 let currentQuestionIndex = 0;
 let score = 0;
+let selectedAnswersCount = 0;
+let correctAnswersCount = 0;
 
 function startQuiz() {
     currentQuestionIndex = 0;
@@ -124,6 +126,9 @@ function showQuestion() {
         button.addEventListener('click', selectAnswer);
         answerButtonsElement.appendChild(button);
     });
+
+    correctAnswersCount = currentQuestion.answers.filter(answer => answer.correct).length;
+    selectedAnswersCount = 0;
 }
 
 function resetState() {
@@ -134,40 +139,47 @@ function resetState() {
     }
 }
 
-function checkAllCorrectSelected() {
-    const correctAnswers = questions[currentQuestionIndex].answers.filter(answer => answer.correct);
-    const selectedCorrectAnswers = Array.from(answerButtonsElement.children).filter(button => button.classList.contains('correct')).length;
-    const selectedWrongAnswers = Array.from(answerButtonsElement.children).filter(button => button.classList.contains('wrong')).length;
-
-    // Проверяем условия для отображения кнопки Next
-    if (selectedWrongAnswers > 0 || (selectedCorrectAnswers > 0 && selectedCorrectAnswers === correctAnswers.length)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function selectAnswer(e) {
     const selectedButton = e.target;
     const correct = selectedButton.dataset.correct === 'true';
 
     if (correct) {
         selectedButton.classList.add('correct');
-        score++;
     } else {
         selectedButton.classList.add('wrong');
     }
 
     selectedButton.removeEventListener('click', selectAnswer);
+    selectedAnswersCount++;
 
-    if (checkAllCorrectSelected()) {
+    if (selectedAnswersCount >= correctAnswersCount) {
+        Array.from(answerButtonsElement.children).forEach(button => {
+            button.disabled = true;
+        });
         nextButton.style.display = 'block';
         nextButton.disabled = false;
-
-        Array.from(answerButtonsElement.children).forEach(button => {
-            button.removeEventListener('click', selectAnswer);
-        });
     }
+}
+
+function handleNextButton() {
+    if (checkAllCorrectSelected()) {
+        score++;
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showScore();
+    }
+}
+
+function checkAllCorrectSelected() {
+    const correctAnswers = questions[currentQuestionIndex].answers.filter(answer => answer.correct);
+    const selectedCorrectAnswers = Array.from(answerButtonsElement.children).filter(button => button.classList.contains('correct')).length;
+    const selectedWrongAnswers = Array.from(answerButtonsElement.children).filter(button => button.classList.contains('wrong')).length;
+
+    // Ensure no wrong answers selected and all correct answers selected
+    return selectedWrongAnswers === 0 && selectedCorrectAnswers === correctAnswers.length;
 }
 
 function showScore() {
@@ -177,15 +189,6 @@ function showScore() {
     nextButton.innerHTML = 'Restart';
     nextButton.style.display = 'block';
     nextButton.disabled = false;
-}
-
-function handleNextButton() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        showQuestion();
-    } else {
-        showScore();
-    }
 }
 
 nextButton.addEventListener('click', () => {
